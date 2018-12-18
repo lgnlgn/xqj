@@ -55,7 +55,8 @@ public class App
 		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "_datex");
 		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "_timex");
 		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "_timex");
-		return timed;
+		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "_phonex");
+		return phoned;
 	}
 
 
