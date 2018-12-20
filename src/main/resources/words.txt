@@ -8,15 +8,19 @@
 暂无
 未诉
 不详
-u/ml
-ug/L
-ng/ml
-mmol/L
-pmol/L
-u/L
+次/分
+_datex
+_timex
+_phonex
+u/ml	q
+ug/L	q
+ng/ml	q
+mmol/L	q
+pmol/L	q
+u/L	q
 d1
 d8
-U/L
+U/L	q
 G-CSF
 DT5330cGY
 DT4940cGY
@@ -25,8 +29,8 @@ q3w
 +)
 (+
 -)
-ug/ML
-mg/m2
+ug/ML	q
+mg/m2	q
 mg
 g
 datex
