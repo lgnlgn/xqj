@@ -27,6 +27,7 @@ import com.hankcs.hanlp.seg.common.Term;
  * Hello world!
  *
  */
+
 public class App 
 {
 	static Segment seg = HanLP.newSegment();
@@ -52,10 +53,10 @@ public class App
 	}
 
 	public static String replaceTrival(String input){
-		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "_datex");
-		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "_timex");
-		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "_timex");
-		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "_phonex");
+		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "＋datex");
+		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "＋timex");
+		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "＋timex");
+		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "＋phonex");
 		return phoned;
 	}
 
@@ -157,19 +158,22 @@ public class App
 		System.out.println(collect);
 		loadDict();
 		
-		String inputDir = "D:/xqj/raws";
-		String outputDir = "D:/xqj/sentences";
-		for(int i = 1 ; i <= 3; i++){
-			splitSentence(inputDir + "/raw" + i + ".txt", outputDir + "/raw" + i + ".txt");
-		}
+//		String inputDir = "D:/xqj/raws";
+//		String outputDir = "D:/xqj/sentences";
+//		for(int i = 1 ; i <= 3; i++){
+//			splitSentence(inputDir + "/raw" + i + ".txt", outputDir + "/raw" + i + ".txt");
+//		}
 //		process();
-		    	String comp = "（CD34(+)；CK7(-)注：本例细胞烧灼、挤压变形，免疫组化表达欠佳，建议必要时做基因重排以明确诊断。）P53(+，阳性细胞40-50%)：";
+		    	String comp = " 粒细胞计数2.20×10E9/L；*红细胞计数3.61×10E12/L；出院诊断:1.肺癌术后（T2aN0M0IB期） 住院医师 ：  ＋datex ＋timex （CD34(+)；CK7(-)注：本例细胞烧灼、挤压变形，免疫组化表达欠佳，建议必要时做基因重排以明确诊断。）P53(+，阳性细胞40-50%)：";
 		//
-		//		Segment enableNumberQuantifierRecognize = HanLP.newSegment();
-		//		List<Term> segment = enableNumberQuantifierRecognize.seg(comp.toLowerCase());
-		//		
-		//    	System.out.println(segment);
-		//    	
+				Segment sss = HanLP.newSegment();
+				sss.enableAllNamedEntityRecognize(false);
+				sss.enableNumberQuantifierRecognize(false);
+				sss.enableNameRecognize(false);
+				List<Term> segment = sss.seg(comp.toLowerCase());
+				
+		    	System.out.println(segment);
+		    	
 		    	String[] split = comp.split("<=。）{1,2}|。）{0,2}");
 		    	for(String s : split){
 		    		System.out.println(s);

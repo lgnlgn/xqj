@@ -8,19 +8,20 @@
 暂无
 未诉
 不详
+＋timex
+＋ratiox
 次/分
-_datex
-_timex
-_phonex
-u/ml	q
-ug/L	q
-ng/ml	q
-mmol/L	q
-pmol/L	q
-u/L	q
+＋datex
+＋phonex
+u/ml
+ug/L
+ng/ml
+mmol/L
+pmol/L
+u/L
 d1
 d8
-U/L	q
+U/L
 G-CSF
 DT5330cGY
 DT4940cGY
@@ -29,39 +30,33 @@ q3w
 +)
 (+
 -)
-ug/ML	q
-mg/m2	q
-mg
-g
-datex
-timex
-/L
+（+
++）
+-）
+（-
+q21d
+ug/ML
+mg/m2
+g/L
+×10E12/L
+×10E12/L	
+×10E9/L
 cII
 NK/T
 /min
 MRI
-结扎术
+减灭
 结扎
-切除术
 切除
-活检术
 活检
-旋切术
 旋切
-治疗术
 治疗
-清扫术
 清扫
-修补术
 修补
-引流术
 引流
 栓塞
-栓塞术
 检查
-造瘘术
 造瘘
-闭瘘术
 探查
 Roux-en-Y
 毕II式
@@ -69,14 +64,9 @@ Roux-en-Y
 保乳
 全胃
 食管空肠
-吻合术
 动脉造影
 造影
-扩张术
-消融术
-注射术
 灌注
-EP方案
 XELOX
 TAC
 S0X
@@ -232,8 +222,6 @@ CDX-2
 P53
 Ki-67
 E-Cadherin
-CK(+)
-CdX-2(+)
 CK20
 CD56
 S-100
@@ -279,14 +267,12 @@ BCL-2
 C-MYC
 Villin
 HBsAg
-C-erbB-2 1
+C-erbB-2
 CdX-2
 肿瘤细胞
 PAS
 Fascin
 GCDFP-15
-ER阳性率
-PR阳性率
 EGFR
 ER
 淋巴结
@@ -312,7 +298,7 @@ P120
 D5F3
 染色示陷窝
 陷窝细胞
-E-Cadherin(+)
+E-Cadherin
 PAX-8
 P63
 CgA
@@ -488,9 +474,6 @@ I
 Ccr
 尿素
 尿素氮
-内生肌酐
-内生肌酐清除率
-肌酐清除率
 尿蛋白
 肾衰
 肾衰竭
@@ -624,7 +607,6 @@ I°
 眩晕
 前庭病
 心肌酶
-CK
 CK-MB
 肌酸激酶
 心律不齐

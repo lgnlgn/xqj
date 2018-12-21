@@ -4,21 +4,13 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.dictionary.CustomDictionary;
-import com.hankcs.hanlp.seg.Segment;
-import com.hankcs.hanlp.seg.common.Term;
 
 /**
  * for label and segment
@@ -27,56 +19,41 @@ import com.hankcs.hanlp.seg.common.Term;
  */
 public class SentenceSplitter {
 
-	static Segment seg = HanLP.newSegment();
-	static HashSet<String> dots = new HashSet<>();
-	
-	public static void loadDict() throws URISyntaxException{
-
-
-		String customDict = "words.txt";
-
-		//read file into stream, try-with-resources
-
-		URL systemResource = ClassLoader.getSystemResource(customDict);
-		try (Stream<String> stream = Files.lines(Paths.get(systemResource.toURI()))) {
-			stream.map(t ->t.toLowerCase()).forEach(CustomDictionary::add);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public static String replaceTrival(String input){
-		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "_datex");
-		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "_timex");
-		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "_timex");
-		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "_phonex");
-		return phoned;
+		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "＋datex");
+		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "＋timex");
+		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "＋timex");
+		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "＋phonex");
+		String ratiod = phoned.replaceAll("\\d{1,2}-\\d{1,2}%", "＋ratiox");
+		return ratiod;
 	}
 	
 	
-	public static void splitRaw(String inFile, String labelFile) throws IOException{
+	public static Set<String> splitRaw(String inFile, String labelFile, boolean splitBlank) throws IOException{
 		BufferedReader reader = Files.newBufferedReader(Paths.get(inFile));
 		BufferedWriter writer = Files.newBufferedWriter(Paths.get(labelFile));
+		
 		String line = null;
+		Set<String> result = new HashSet<>();
 		while((line = reader.readLine())!= null){
-			if (line.startsWith("归整病历")){
+			if (line.startsWith("归整病历") || line.equals("患者信息")){
 				break;
 			}
 			if (line.length() > 6){
 				String[] paragraphs = line.split("(?<=。)\\s{1,}"); //must be a paragraph
-				System.out.println("paragraphs:" + paragraphs.length);
+//				System.out.println("paragraphs:" + paragraphs.length);
 				for (String paragraph : paragraphs){
 					//sentences
 					String[] sentences = paragraph.split("[。！]）{0,1}");
 					for (String s : sentences){
+						String replaced = replaceTrival(s);
 						
 						//for segment
-						segAndTerms(writer,s);
+						result.add(replaced);
 						
 						//for labeled
-						String replaced = replaceTrival(s);
-						splitAndOLabel(writer, replaced);
+						splitBlankAndOLabel(writer, replaced, splitBlank);
 					}
 				}
 			}else{
@@ -85,34 +62,56 @@ public class SentenceSplitter {
 		}
 		writer.close();
 		reader.close();
+		return result;
 	}
 	
-	public static void splitAndOLabel(BufferedWriter writer, String sentence) throws IOException{
-		for(String ss : sentence.split("\\s+(?=[^\\_])"))
+	public static void splitBlankAndOLabel(BufferedWriter writer, String sentence, boolean splitBlank) throws IOException{
+		for(String ss : sentence.split("\\s+(?=[^\\_])", splitBlank==true?10000:1))
 			writer.write(ss + "\n");
 	}
 	
-	public static void segAndTerms(BufferedWriter writer, String sentence) throws IOException{
-		List<Term> seg2 = seg.seg(sentence.toLowerCase());
-		List<String> collect = seg2.stream()
-				.filter(t -> !(t.word.trim().isEmpty()) && !dots.contains(t.word.trim()) )
-				.map(t -> t.word.trim())
-				.collect(Collectors.toList());
-		writer.write  (collect.stream().collect(Collectors.joining(" ")));
+	public static void segToTerms(String outFile, Set<String> sentences) throws IOException{
+		System.out.println("segToTerms.....");
+		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+	
+		Set<String> phrases = new HashSet<>();
+		
+		for(String sentence : sentences){
+			
+			List<String> collect = Segmenter.simpleSeg(sentence.toLowerCase());
+			String w2vLine = collect.stream().collect(Collectors.joining(" "));
+			
+			if (collect.size() >= 3){
+				phrases.add( w2vLine);
+				
+			}
+		}
+		for(String w2v : phrases){
+			writer.write(w2v + "\n");
+		}
+		writer.close();
 	}
+	
+	
 	
 	
 	public static void main(String[] args) throws IOException, URISyntaxException {
 		
-		loadDict();
 		
 		String inputDir = "D:/xqj/raws";
 		String outputDir = "D:/xqj/sentences";
+		String trainingFile = "D:/xqj/train.txt";
+		boolean splitBlank = false;
+		Set<String> sentences = new HashSet<>();
+		
 		File[] listFiles = new File(inputDir).listFiles();
 		for(File f : listFiles){
 			System.out.println(f.getName());
-			splitRaw(f.getAbsolutePath(), outputDir + "/" + f.getName());
+			sentences.addAll(splitRaw(f.getAbsolutePath(), outputDir + "/" + f.getName(), splitBlank));
 		}
+		
+		segToTerms(trainingFile, sentences);
+		
 	}
 
 }

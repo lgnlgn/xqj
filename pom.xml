@@ -36,5 +36,27 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.17</version>
 		</dependency>
+		<dependency>
+			<groupId>org.nlpcn</groupId>
+			<artifactId>nlp-lang</artifactId>
+			<version>0.3</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/nlp-lang-0.3.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ansj</groupId>
+			<artifactId>ansj_seg</artifactId>
+			<version>1.41</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/ansj_seg-1.4.1-min.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.ansj</groupId>
+			<artifactId>tree_split</artifactId>
+			<version>1.41</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/tree_split-1.4.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>
