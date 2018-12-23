@@ -166,6 +166,7 @@ public class App
 //		process();
 		    	String comp = " 粒细胞计数2.20×10E9/L；*红细胞计数3.61×10E12/L；出院诊断:1.肺癌术后（T2aN0M0IB期） 住院医师 ：  ＋datex ＋timex （CD34(+)；CK7(-)注：本例细胞烧灼、挤压变形，免疫组化表达欠佳，建议必要时做基因重排以明确诊断。）P53(+，阳性细胞40-50%)：";
 		//
+		    	String comp2 = "5、辅助检查：萑薄？/span> 初步诊断：1、右上肺癌靶向治疗后进展 Ⅳ期 EGFR 21外显子L858R突变， EML4-ALK融合基因野生 型 2、全身多发转移瘤（脑、右肺门、纵隔、右锁骨区淋巴结、右肾上腺、骨） 诊断依据： 1.中年男性，以胸痛为首发症状";
 				Segment sss = HanLP.newSegment();
 				sss.enableAllNamedEntityRecognize(false);
 				sss.enableNumberQuantifierRecognize(false);
@@ -175,6 +176,7 @@ public class App
 		    	System.out.println(segment);
 		    	
 		    	String[] split = comp.split("<=。）{1,2}|。）{0,2}");
+		    	split = comp2.split("[，\\s](?=[^：:]{2,8}[：:])");
 		    	for(String s : split){
 		    		System.out.println(s);
 		    	}

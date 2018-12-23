@@ -22,6 +22,7 @@ public class Segmenter {
 	static HashSet<String> dots = new HashSet<>();
 	
 	static {
+		seg.enableNameRecognize(false);
 		try{
 			loadDict();
 		}catch(URISyntaxException e){

@@ -21,12 +21,13 @@ public class SentenceSplitter {
 
 	
 	public static String replaceTrival(String input){
-		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "＋datex");
-		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "＋timex");
-		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "＋timex");
-		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "＋phonex");
-		String ratiod = phoned.replaceAll("\\d{1,2}-\\d{1,2}%", "＋ratiox");
-		return ratiod;
+		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "△datex");
+		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "△timex");
+		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "△timex");
+		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "△phonex");
+		String ratiod = phoned.replaceAll("\\d{1,2}-\\d{1,2}%", "△ratiox");
+		return ratiod.trim();
+//		return ratiod.trim().replaceAll(" ", "") ;
 	}
 	
 	
@@ -41,11 +42,14 @@ public class SentenceSplitter {
 				break;
 			}
 			if (line.length() > 6){
-				String[] paragraphs = line.split("(?<=。)\\s{1,}"); //must be a paragraph
+				String[] paragraphs = line.split("(?<=[。！；])[\\s]{1,}| "); //must be a paragraph
 //				System.out.println("paragraphs:" + paragraphs.length);
 				for (String paragraph : paragraphs){
 					//sentences
-					String[] sentences = paragraph.split("[。！]）{0,1}");
+					if (paragraph.contains("肝右叶、左肾低密度影，考虑囊肿可能性大")){
+						System.out.println(paragraph);
+					}
+					String[] sentences = paragraph.split("[。！；]）{0,1}");
 					for (String s : sentences){
 						String replaced = replaceTrival(s);
 						
@@ -66,8 +70,19 @@ public class SentenceSplitter {
 	}
 	
 	public static void splitBlankAndOLabel(BufferedWriter writer, String sentence, boolean splitBlank) throws IOException{
-		for(String ss : sentence.split("\\s+(?=[^\\_])", splitBlank==true?10000:1))
-			writer.write(ss + "\n");
+//		for(String ss : sentence.split("\\s+(?=[^\\_])", splitBlank==true?10000:1))
+//			writer.write(ss + "\n");
+		if (sentence.contains("出院医嘱:1. 低脂饮食")){
+			System.out.println(sentence);
+		}
+		if (sentence.contains("姓名") || sentence.contains("性别") ||sentence.contains("年龄") ||sentence.contains("体重") ){
+			writer.write("O\t" + sentence + "\n");
+		}else{
+			String[] split = sentence.split("(，|[^\\d\\w]\\s)(?=[^：:]{2,8}[：:])");
+			for(String ss : split){
+				writer.write("O\t" + ss + "\n");
+			}
+		}
 	}
 	
 	public static void segToTerms(String outFile, Set<String> sentences) throws IOException{

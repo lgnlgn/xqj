@@ -8,11 +8,11 @@
 暂无
 未诉
 不详
-＋timex
-＋ratiox
+△timex
+△ratiox
 次/分
-＋datex
-＋phonex
+△datex
+△phonex
 u/ml
 ug/L
 ng/ml
@@ -30,6 +30,8 @@ q3w
 +)
 (+
 -)
+↓
+↑
 （+
 +）
 -）
