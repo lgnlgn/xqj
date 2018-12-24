@@ -166,7 +166,7 @@ public class App
 //		process();
 		    	String comp = " 粒细胞计数2.20×10E9/L；*红细胞计数3.61×10E12/L；出院诊断:1.肺癌术后（T2aN0M0IB期） 住院医师 ：  ＋datex ＋timex （CD34(+)；CK7(-)注：本例细胞烧灼、挤压变形，免疫组化表达欠佳，建议必要时做基因重排以明确诊断。）P53(+，阳性细胞40-50%)：";
 		//
-		    	String comp2 = "5、辅助检查：萑薄？/span> 初步诊断：1、右上肺癌靶向治疗后进展 Ⅳ期 EGFR 21外显子L858R突变， EML4-ALK融合基因野生 型 2、全身多发转移瘤（脑、右肺门、纵隔、右锁骨区淋巴结、右肾上腺、骨） 诊断依据： 1.中年男性，以胸痛为首发症状";
+		    	String comp2 = "出院医嘱:1. 低脂饮食，合理营养，避免剧烈活动，注意休息，预防感染； 2. 1周后当地医院复查尿常规，有异常及时就诊； 3. 3月后返院复查，请提前3-4天预约床位，我科床位联系电话：△phonex； 4. 出院带药：三金片3# tid；甲钴胺片(H)0.5mg tid； 5. 不适请随诊";
 				Segment sss = HanLP.newSegment();
 				sss.enableAllNamedEntityRecognize(false);
 				sss.enableNumberQuantifierRecognize(false);
@@ -176,7 +176,7 @@ public class App
 		    	System.out.println(segment);
 		    	
 		    	String[] split = comp.split("<=。）{1,2}|。）{0,2}");
-		    	split = comp2.split("[，\\s](?=[^：:]{2,8}[：:])");
+		    	split = comp2.split("(，|[^\\、\\.\\d\\w]\\s)(?=[^：:]{2,8}[：:])");
 		    	for(String s : split){
 		    		System.out.println(s);
 		    	}

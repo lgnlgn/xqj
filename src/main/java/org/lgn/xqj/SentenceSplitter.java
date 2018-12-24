@@ -42,14 +42,14 @@ public class SentenceSplitter {
 				break;
 			}
 			if (line.length() > 6){
-				String[] paragraphs = line.split("(?<=[。！；])[\\s]{1,}| "); //must be a paragraph
+				String[] paragraphs = line.split("(?<=[。！？])[\\s]{1,}| "); //must be a paragraph
 //				System.out.println("paragraphs:" + paragraphs.length);
-				for (String paragraph : paragraphs){
+				for (String paragraph : paragraphs){ 
 					//sentences
 					if (paragraph.contains("肝右叶、左肾低密度影，考虑囊肿可能性大")){
 						System.out.println(paragraph);
 					}
-					String[] sentences = paragraph.split("[。！；]）{0,1}");
+					String[] sentences = paragraph.split("[。！？]）{0,1}");
 					for (String s : sentences){
 						String replaced = replaceTrival(s);
 						
@@ -72,15 +72,18 @@ public class SentenceSplitter {
 	public static void splitBlankAndOLabel(BufferedWriter writer, String sentence, boolean splitBlank) throws IOException{
 //		for(String ss : sentence.split("\\s+(?=[^\\_])", splitBlank==true?10000:1))
 //			writer.write(ss + "\n");
-		if (sentence.contains("出院医嘱:1. 低脂饮食")){
+		if (sentence.contains("48小时内查房记录")){
 			System.out.println(sentence);
 		}
-		if (sentence.contains("姓名") || sentence.contains("性别") ||sentence.contains("年龄") ||sentence.contains("体重") ){
-			writer.write("O\t" + sentence + "\n");
+		
+		if (sentence.contains("姓名") && sentence.contains("性别") && sentence.contains("年龄")) {
+			List<String> simpleSeg = Segmenter.simpleSeg(sentence);
+			writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
 		}else{
-			String[] split = sentence.split("(，|[^\\d\\w]\\s)(?=[^：:]{2,8}[：:])");
+			String[] split = sentence.split("(?<=[^\\、\\.\\d\\w])(，|\\s)(?=[^：:\\d\\w]{2,8}[：:])");
 			for(String ss : split){
-				writer.write("O\t" + ss + "\n");
+				List<String> simpleSeg = Segmenter.simpleSeg(ss);
+				writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
 			}
 		}
 	}
