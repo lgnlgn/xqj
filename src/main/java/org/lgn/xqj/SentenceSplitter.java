@@ -21,7 +21,7 @@ public class SentenceSplitter {
 
 	
 	public static String replaceTrival(String input){
-		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D\\d{1,2}日*", "△datex");
+		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D(\\d{1,2}日*)*", "△datex");
 		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "△timex");
 		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "△timex");
 		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "△phonex");
@@ -72,7 +72,7 @@ public class SentenceSplitter {
 	public static void splitBlankAndOLabel(BufferedWriter writer, String sentence, boolean splitBlank) throws IOException{
 //		for(String ss : sentence.split("\\s+(?=[^\\_])", splitBlank==true?10000:1))
 //			writer.write(ss + "\n");
-		if (sentence.contains("48小时内查房记录")){
+		if (sentence.contains("肿瘤化疗一区床位号:31")){
 			System.out.println(sentence);
 		}
 		
@@ -80,7 +80,7 @@ public class SentenceSplitter {
 			List<String> simpleSeg = Segmenter.simpleSeg(sentence);
 			writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
 		}else{
-			String[] split = sentence.split("(?<=[^\\、\\.\\d\\w])(，|\\s)(?=[^：:\\d\\w]{2,8}[：:])");
+			String[] split = sentence.split("(?<=[^\\、\\.\\d\\w])(，|\\s)(?=[^：:\\d\\w]{2,10}[：:])");
 			for(String ss : split){
 				List<String> simpleSeg = Segmenter.simpleSeg(ss);
 				writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
