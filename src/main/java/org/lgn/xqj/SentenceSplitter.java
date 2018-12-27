@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,20 +43,16 @@ public class SentenceSplitter {
 				break;
 			}
 			if (line.length() > 6){
-				String[] paragraphs = line.split("(?<=[。！？])[\\s]{1,}| "); //must be a paragraph
+				List<String> paragraphs = filterEmpties(paragraphSplit(line)); //must be a paragraph
 //				System.out.println("paragraphs:" + paragraphs.length);
 				for (String paragraph : paragraphs){ 
 					//sentences
-					if (paragraph.contains("肝右叶、左肾低密度影，考虑囊肿可能性大")){
-						System.out.println(paragraph);
-					}
-					String[] sentences = paragraph.split("[。！？]）{0,1}");
+					List<String> sentences = filterEmpties(stopSplit(paragraph));
 					for (String s : sentences){
 						String replaced = replaceTrival(s);
 						
 						//for segment
 						result.add(replaced);
-						
 						//for labeled
 						splitBlankAndOLabel(writer, replaced, splitBlank);
 					}
@@ -69,21 +66,61 @@ public class SentenceSplitter {
 		return result;
 	}
 	
-	public static void splitBlankAndOLabel(BufferedWriter writer, String sentence, boolean splitBlank) throws IOException{
-//		for(String ss : sentence.split("\\s+(?=[^\\_])", splitBlank==true?10000:1))
-//			writer.write(ss + "\n");
-		if (sentence.contains("肿瘤化疗一区床位号:31")){
-			System.out.println(sentence);
+	static List<String> filterEmpties(String[] splited){
+		List<String> asList = Arrays.asList(splited);
+		return asList.stream().filter(s -> (s.length() > 3)).collect(Collectors.toList());
+	}
+	
+	public static String[] dateSplit(String s ){
+		return s.split("(?=[，；][^，]{0,7}?△datex|于△datex)") ;
+	}
+	
+	public static String[] stopSplit(String s){
+		return   s.split("[。！？]）{0,1}");
+	}
+	
+	public static String[] paragraphSplit(String line){
+		return  line.split("(?<=[。！？])[\\s]{1,}| ");
+	}
+
+	public static String[] colonSplit(String sentence){
+		return sentence.split("(?<=[^\\、\\.\\d\\w])[，,\\s](?=[^：:\\d\\w]{2,12}[：:])");
+	}
+	
+	public static void debug(String line, String content){
+		if (line.contains(content)){
+			System.out.println(line);
 		}
+	}
+	
+	public static void splitBlankAndOLabel(BufferedWriter writer, String sentence, boolean splitBlank) throws IOException{
+
+		debug(sentence, "病例特点:1.绝经期妇女");
 		
-		if (sentence.contains("姓名") && sentence.contains("性别") && sentence.contains("年龄")) {
-			List<String> simpleSeg = Segmenter.simpleSeg(sentence);
-			writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
+		if (sentence.contains("姓名") && sentence.contains("性别") && sentence.contains("年龄")) {//首行特殊处理
+			for(String dd : dateSplit(sentence)){
+				if (sentence.contains("姓名") && sentence.contains("性别") && sentence.contains("年龄")) 
+					continue;
+				else{
+					String[] split = colonSplit(dd);
+					for(String ss : split)
+						writer.write("O\t" + ss + "\n");
+				}
+					
+				
+			}
+//			writer.write("O\t" + sentence + "\n");
+//			writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
 		}else{
-			String[] split = sentence.split("(?<=[^\\、\\.\\d\\w])(，|\\s)(?=[^：:\\d\\w]{2,10}[：:])");
+			String[] split = colonSplit(sentence);
 			for(String ss : split){
-				List<String> simpleSeg = Segmenter.simpleSeg(ss);
-				writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
+				List<String> dateSplit = filterEmpties(dateSplit(ss));
+				for(String dd : dateSplit){
+					writer.write("O\t" + dd + "\n"  );
+				}
+//				writer.write("O\t" + ss + "\n");
+//				List<String> simpleSeg = Segmenter.simpleSeg(ss);
+//				writer.write("O\t" + simpleSeg.stream().collect(Collectors.joining(" ")) + "\n");
 			}
 		}
 	}
