@@ -100,13 +100,13 @@ public class SentenceSplitter {
 		if (sentence.contains("姓名") && sentence.contains("性别") && sentence.contains("年龄")) {//首行特殊处理
 			for(String dd : dateSplit(sentence)){
 				if (dd.contains("姓名") && dd.contains("性别") && dd.contains("年龄")) {
-//					writer.write("O\t" + dd + "\n");
-					writer.write("O\t" + seg2Line(dd) + "\n"  );
+					writer.write("O\t" + dd + "\n");
+//					writer.write("O\t" + seg2Line(dd) + "\n"  );
 				}else{
 					String[] split = colonSplit(dd);
 					for(String ss : split){
-//						writer.write("O\t" + ss + "\n");
-						writer.write("O\t" + seg2Line(dd) + "\n"  );
+						writer.write("O\t" + ss + "\n");
+//						writer.write("O\t" + seg2Line(dd) + "\n"  );
 					}
 				}
 					
@@ -117,8 +117,8 @@ public class SentenceSplitter {
 			for(String ss : split){
 				List<String> dateSplit = filterEmpties(dateSplit(ss));
 				for(String dd : dateSplit){
-//					writer.write("O\t" + dd + "\n"  );
-					writer.write("O\t" + seg2Line(dd) + "\n"  );
+					writer.write("O\t" + dd + "\n"  );
+//					writer.write("O\t" + seg2Line(dd) + "\n"  );
 				}
 			}
 		}

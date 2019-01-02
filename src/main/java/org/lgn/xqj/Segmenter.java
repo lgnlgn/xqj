@@ -67,6 +67,12 @@ public class Segmenter {
 		return collect;
 	}
 	
+	public static String seg2Line(String s){
+		List<String> simpleSeg = Segmenter.simpleSeg(s);
+		return simpleSeg.stream().collect(Collectors.joining(" "));
+	}
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
