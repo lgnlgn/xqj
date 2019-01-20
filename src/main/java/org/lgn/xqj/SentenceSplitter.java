@@ -22,7 +22,7 @@ public class SentenceSplitter {
 
 	
 	public static String replaceTrival(String input){
-		String dated = input.replaceAll("\\d{4}\\D\\d{1,2}\\D(\\d{1,2}日*)*", "△datex");
+		String dated = input.replaceAll("20\\d{2}\\D\\d{1,2}\\D(\\d{1,2}日*)*", "△datex");
 		String timed = dated.replaceAll("\\d{1,2}时(\\d{1,2}分)*(\\d{1,2}秒)*", "△timex");
 		timed = timed.replaceAll("\\d{1,2}:\\d+(:\\d{2,})*(:\\d+)*", "△timex");
 		String phoned = timed.replaceAll("\\d{3,4}-\\d{7,8}", "△phonex");

@@ -14,6 +14,7 @@ public class SentencesSegmenter {
 		for(File f : files){
 			File out = new File(outDir + "/" + f.getName());
 			if (f.getName().endsWith(".txt")){
+				System.out.println(f.getName());
 				seg(f, out);
 			}
 		}
@@ -24,8 +25,8 @@ public class SentencesSegmenter {
 		BufferedWriter writer = Files.newBufferedWriter(Paths.get(out.getAbsolutePath()));
 		String line = null;
 		while((line = reader.readLine())!= null){
-			if (line.contains("\t")){
-				String[] split = line.split("\t");
+			String[] split = line.split("\t");
+			if (split.length == 2){
 				writer.write(split[0] + "\t" );
 				writer.write(Segmenter.seg2Line(split[1]) + "\n");
 			}else{
